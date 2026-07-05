@@ -27,5 +27,11 @@ import type { NuxtError } from '#app'
 
 const props = defineProps<{ error: NuxtError }>()
 const statusCode = computed(() => props.error?.statusCode || 404)
-const goHome = () => clearError({ redirect: '/' })
+const goHome = () => {
+  if (import.meta.client) {
+    clearError({ redirect: '/' })
+  } else {
+    navigateTo('/')
+  }
+}
 </script>

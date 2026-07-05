@@ -1,7 +1,12 @@
 export default defineNuxtConfig({
-  devtools: { enabled: process.env.NODE_ENV !== 'production' },
+  devtools: { enabled: false },
   modules: ['@pinia/nuxt'],
   css: ['~/assets/css/main.css'],
+  vite: {
+    resolve: {
+      dedupe: ['vue', 'vue-router'],
+    },
+  },
   postcss: {
     plugins: {
       tailwindcss: {},

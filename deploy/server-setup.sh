@@ -7,7 +7,7 @@ SERVER_IP="85.208.253.193"
 install_packages() {
   if command -v apt-get &>/dev/null; then
     export DEBIAN_FRONTEND=noninteractive
-    apt-get update -qq
+    apt-get update -qq 2>/dev/null || apt-get update -qq -o Dir::Etc::sourcelist=/etc/apt/sources.list -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0" || true
     apt-get install -y -qq curl gnupg nginx ca-certificates openssl
   elif command -v dnf &>/dev/null; then
     dnf install -y curl gnupg nginx ca-certificates openssl
@@ -94,13 +94,19 @@ API_PUBLIC_URL=http://${SERVER_IP}
 ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD=admin123456
 
-SMS_IR_API_KEY=bdk5W2G7PdPbEUfQQefyoPSFgUm95Zvx50nfNTwEcOe59gKK
+SMS_IR_API_KEY=your-sms-ir-api-key
 SMS_IR_TEMPLATE_ID=553188
 SMS_IR_CODE_PARAM=VERIFICATIONCODE
 SMS_IR_DEV_MODE=false
 ENVEOF
 else
-  echo "Keeping existing backend .env"
+  echo "Updating backend .env URLs for production..."
+  sed -i "s|^FRONTEND_URL=.*|FRONTEND_URL=http://${SERVER_IP}|" "$APP_DIR/backend/.env"
+  sed -i "s|^ZARINPAL_CALLBACK_URL=.*|ZARINPAL_CALLBACK_URL=http://${SERVER_IP}/api/payment/verify|" "$APP_DIR/backend/.env"
+  sed -i "s|^API_PUBLIC_URL=.*|API_PUBLIC_URL=http://${SERVER_IP}|" "$APP_DIR/backend/.env"
+  grep -q '^FRONTEND_URL=' "$APP_DIR/backend/.env" || echo "FRONTEND_URL=http://${SERVER_IP}" >> "$APP_DIR/backend/.env"
+  grep -q '^API_PUBLIC_URL=' "$APP_DIR/backend/.env" || echo "API_PUBLIC_URL=http://${SERVER_IP}" >> "$APP_DIR/backend/.env"
+  sed -i 's/\r$//' "$APP_DIR/backend/.env"
 fi
 
 echo "==> Frontend env..."
@@ -116,8 +122,10 @@ node src/scripts/seed.js || true
 
 echo "==> Frontend build..."
 cd "$APP_DIR/frontend"
+rm -rf node_modules .output .nuxt
 npm install --ignore-scripts
 npm run build
+rm -rf .nuxt
 
 echo "==> Nginx..."
 setup_nginx

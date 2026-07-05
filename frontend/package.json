@@ -11,12 +11,13 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.5.5",
+    "nuxt": "3.15.4",
     "pinia": "^2.2.4",
-    "nuxt": "3.10.3",
-    "vue": "^3.5.12",
-    "vue-router": "^4.4.5"
+    "vue": "3.5.13",
+    "vue-router": "4.5.0"
   },
   "devDependencies": {
+    "@vue/compiler-sfc": "3.5.13",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14"
@@ -25,7 +26,14 @@
     "node": ">=18.0.0"
   },
   "overrides": {
-    "nuxi": "3.10.0",
-    "nitropack": "2.9.7"
+    "vue": "3.5.13",
+    "vue-router": "4.5.0",
+    "@vue/runtime-core": "3.5.13",
+    "@vue/runtime-dom": "3.5.13",
+    "@vue/server-renderer": "3.5.13",
+    "@vue/compiler-dom": "3.5.13",
+    "@vue/compiler-sfc": "3.5.13",
+    "@vue/shared": "3.5.13",
+    "@vue/reactivity": "3.5.13"
   }
 }

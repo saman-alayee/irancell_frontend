@@ -5,6 +5,7 @@ module.exports = {
       cwd: '/var/www/irancell/backend',
       script: 'src/server.js',
       instances: 1,
+      exec_mode: 'fork',
       autorestart: true,
       max_memory_restart: '500M',
       env: {
@@ -13,9 +14,10 @@ module.exports = {
     },
     {
       name: 'irancell-web',
-      cwd: '/var/www/irancell/frontend',
-      script: '.output/server/index.mjs',
+      cwd: '/var/www/irancell/frontend/.output/server',
+      script: 'index.mjs',
       instances: 1,
+      exec_mode: 'fork',
       autorestart: true,
       max_memory_restart: '500M',
       env: {

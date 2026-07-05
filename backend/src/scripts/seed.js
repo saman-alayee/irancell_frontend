@@ -34,7 +34,7 @@ const seed = async () => {
         description: 'مودم پرسرعت 4G ایرانسل با پوشش گسترده',
         price: 2500000,
         stock: 50,
-        images: ['/images/modem-350.jpg'],
+        images: [],
         category: 'modem',
       },
       {
@@ -43,7 +43,7 @@ const seed = async () => {
         description: 'مودم حرفه‌ای 4G با قابلیت WiFi',
         price: 3200000,
         stock: 30,
-        images: ['/images/modem-711.jpg'],
+        images: [],
         category: 'modem',
       },
       {
@@ -52,7 +52,7 @@ const seed = async () => {
         description: 'سیم‌کارت دیتا با بسته اینترنت رایگان',
         price: 150000,
         stock: 100,
-        images: ['/images/sim.jpg'],
+        images: [],
         category: 'accessory',
       },
     ]);

@@ -1,15 +1,18 @@
 export const useApi = () => {
-  const config = useRuntimeConfig()
-
   const getApiBase = (): string => {
     if (import.meta.server) {
-      return String(config.apiBaseInternal || config.public.apiBase || 'http://127.0.0.1:3001/api').replace(/\/$/, '')
+      return String(process.env.API_BASE_INTERNAL || 'http://127.0.0.1:3001/api').replace(/\/$/, '')
     }
-    const base = config.public.apiBase || 'http://127.0.0.1:3001/api'
-    if (base.startsWith('/')) {
-      return `${window.location.origin}${base}`.replace(/\/$/, '')
+    let publicBase = 'http://127.0.0.1:3001/api'
+    try {
+      publicBase = String(useRuntimeConfig().public.apiBase || publicBase)
+    } catch {
+      /* client fallback when config unavailable */
     }
-    return base.replace(/\/$/, '')
+    if (publicBase.startsWith('/')) {
+      return `${window.location.origin}${publicBase}`.replace(/\/$/, '')
+    }
+    return publicBase.replace(/\/$/, '')
   }
 
   const getUploadsBase = (): string => {
@@ -60,8 +63,16 @@ export const useApi = () => {
 
   const resolveImageUrl = (url?: string) => {
     if (!url) return ''
+    const base = getUploadsBase()
+    if (/^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?/.test(url)) {
+      const path = url.replace(/^https?:\/\/[^/]+/, '')
+      return `${base}${path}`
+    }
     if (url.startsWith('http')) return url
-    return `${getUploadsBase()}${url}`
+    if (url.startsWith('/images/')) {
+      return `${base}/uploads/products/${url.slice('/images/'.length)}`
+    }
+    return `${base}${url.startsWith('/') ? url : `/${url}`}`
   }
 
   return {

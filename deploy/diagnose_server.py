@@ -8,12 +8,15 @@ client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 client.connect(HOST, port=PORT, username=USER, password=PASSWORD, timeout=30)
 
 cmds = [
-    'ls -la /root/.pm2/logs/',
-    'tail -40 /root/.pm2/logs/irancell-web-error-1.log 2>/dev/null || tail -40 /root/.pm2/logs/irancell-web-error*.log',
-    'for p in / /admin /admin/login /numbers /products; do echo -n "$p => "; curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000$p; echo; done',
-    'cat /var/www/irancell/frontend/.env',
-    'grep apiBaseInternal /var/www/irancell/frontend/nuxt.config.ts || echo MISSING',
-    'head -3 /var/www/irancell/frontend/error.vue',
+    'ls -la /root/.pm2/logs/ | head -20',
+    'tail -40 /root/.pm2/logs/irancell-web-error*.log 2>/dev/null',
+    'tail -20 /root/.pm2/logs/irancell-web-out*.log 2>/dev/null',
+    'cat /var/www/irancell/frontend/.env 2>/dev/null || echo no-env',
+    'head -5 /var/www/irancell/frontend/error.vue 2>/dev/null',
+    'grep -n apiBaseInternal /var/www/irancell/frontend/nuxt.config.ts 2>/dev/null || echo no-nuxt-config',
+    'curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000/admin/login; echo',
+    'curl -s http://127.0.0.1:3000/admin/login 2>&1 | head -5',
+    'node -v; npm -v',
 ]
 
 def safe_print(s):

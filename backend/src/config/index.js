@@ -12,9 +12,9 @@ module.exports = {
     callbackUrl: process.env.ZARINPAL_CALLBACK_URL || 'http://127.0.0.1:3001/api/payment/verify',
   },
   smsIr: {
-    apiKey: process.env.SMS_IR_API_KEY || '',
-    templateId: process.env.SMS_IR_TEMPLATE_ID || '',
-    codeParam: process.env.SMS_IR_CODE_PARAM || 'VERIFICATIONCODE',
+    apiKey: (process.env.SMS_IR_API_KEY || '').trim(),
+    templateId: (process.env.SMS_IR_TEMPLATE_ID || '').trim(),
+    codeParam: (process.env.SMS_IR_CODE_PARAM || 'VERIFICATIONCODE').trim(),
     devMode: process.env.SMS_IR_DEV_MODE === 'true',
   },
 };
