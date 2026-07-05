@@ -1,6 +1,8 @@
 <template>
   <div>
-    <DiscountTimer />
+    <ClientOnly>
+      <DiscountTimer />
+    </ClientOnly>
 
     <!-- Hero -->
     <section class="relative bg-gradient-to-br from-irancell-black via-gray-900 to-irancell-black text-white overflow-hidden">

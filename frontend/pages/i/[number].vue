@@ -1,13 +1,15 @@
 <template>
   <div class="bg-gradient-to-b from-irancell-black to-gray-900 dark:to-gray-950 min-h-screen">
-    <DiscountTimer />
+    <ClientOnly>
+      <DiscountTimer />
+    </ClientOnly>
 
     <div class="container mx-auto px-4 py-8 lg:py-16">
       <div v-if="pending" class="flex justify-center py-20">
         <div class="w-12 h-12 border-4 border-irancell-yellow border-t-transparent rounded-full animate-spin" />
       </div>
 
-      <div v-else-if="error" class="text-center py-20">
+      <div v-else-if="!numberData" class="text-center py-20">
         <div class="text-6xl mb-4">❌</div>
         <h1 class="text-2xl font-bold text-white mb-2">شماره یافت نشد</h1>
         <p class="text-gray-400 mb-6">شماره مورد نظر در سیستم ثبت نشده است</p>
@@ -92,12 +94,17 @@ const { apiFetch, formatPrice, formatNumber } = useApi()
 
 const number = route.params.number as string
 
-const { data: numberData, pending, error } = await useAsyncData(
+const { data: numberData, pending } = await useAsyncData(
   `number-${number}`,
   async () => {
-    const res = await apiFetch(`/numbers/${number}`)
-    return res.data
-  }
+    try {
+      const res = await apiFetch(`/numbers/${number}`)
+      return res.data
+    } catch {
+      return null
+    }
+  },
+  { default: () => null }
 )
 
 const features = [

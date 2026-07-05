@@ -1,5 +1,5 @@
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { enabled: process.env.NODE_ENV !== 'production' },
   modules: ['@pinia/nuxt'],
   css: ['~/assets/css/main.css'],
   postcss: {
@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
+    apiBaseInternal: process.env.API_BASE_INTERNAL || 'http://127.0.0.1:3001/api',
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://127.0.0.1:3001/api',
     },

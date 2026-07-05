@@ -16,7 +16,8 @@
 </template>
 
 <script setup lang="ts">
-const { apiFetch, formatPrice } = useApi()
+import { formatPrice } from '~/composables/useApi'
+
 const discount = ref<any>(null)
 const timeLeft = ref<{ h: number; m: number; s: number } | null>(null)
 let timer: ReturnType<typeof setInterval>
@@ -39,6 +40,7 @@ const updateTimer = () => {
 }
 
 onMounted(async () => {
+  const { apiFetch } = useApi()
   try {
     const res = await apiFetch('/discounts/active')
     if (res.data) {

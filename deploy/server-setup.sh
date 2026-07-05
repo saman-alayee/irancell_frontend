@@ -77,6 +77,7 @@ install_mongo
 mkdir -p "$APP_DIR/backend/uploads"
 
 echo "==> Backend env..."
+if [ ! -f "$APP_DIR/backend/.env" ]; then
 cat > "$APP_DIR/backend/.env" << ENVEOF
 PORT=3001
 MONGODB_URI=mongodb://127.0.0.1:27017/irancell_shop
@@ -98,10 +99,14 @@ SMS_IR_TEMPLATE_ID=553188
 SMS_IR_CODE_PARAM=VERIFICATIONCODE
 SMS_IR_DEV_MODE=false
 ENVEOF
+else
+  echo "Keeping existing backend .env"
+fi
 
 echo "==> Frontend env..."
 cat > "$APP_DIR/frontend/.env" << ENVEOF
 NUXT_PUBLIC_API_BASE=http://${SERVER_IP}/api
+API_BASE_INTERNAL=http://127.0.0.1:3001/api
 ENVEOF
 
 echo "==> Backend npm install..."

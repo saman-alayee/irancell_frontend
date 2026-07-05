@@ -14,8 +14,9 @@
 </template>
 
 <script setup lang="ts">
+import { formatPrice } from '~/composables/useApi'
+
 const props = defineProps<{ product: any }>()
-const { formatPrice } = useApi()
 
 const pad = (n: number) => String(n).padStart(2, '0')
 const timeLeft = ref<{ h: number; m: number; s: number } | null>(null)

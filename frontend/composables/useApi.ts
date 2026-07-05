@@ -2,10 +2,12 @@ export const useApi = () => {
   const config = useRuntimeConfig()
 
   const getApiBase = (): string => {
+    if (import.meta.server) {
+      return String(config.apiBaseInternal || config.public.apiBase || 'http://127.0.0.1:3001/api').replace(/\/$/, '')
+    }
     const base = config.public.apiBase || 'http://127.0.0.1:3001/api'
     if (base.startsWith('/')) {
-      if (import.meta.server) return `http://127.0.0.1:3001${base}`
-      return `${window.location.origin}${base}`
+      return `${window.location.origin}${base}`.replace(/\/$/, '')
     }
     return base.replace(/\/$/, '')
   }

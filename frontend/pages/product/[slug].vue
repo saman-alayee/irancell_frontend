@@ -37,19 +37,28 @@
         </div>
       </div>
     </div>
+    <div v-else class="text-center py-20 text-muted">
+      <div class="text-5xl mb-4">📦</div>
+      <h2 class="text-xl font-bold mb-2">محصول یافت نشد</h2>
+      <NuxtLink to="/products" class="btn-primary inline-block mt-4 py-2 px-6">بازگشت به محصولات</NuxtLink>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 const route = useRoute()
 const cartStore = useCartStore()
-const { apiFetch, formatPrice, resolveImageUrl } = useApi()
+const { apiFetch, resolveImageUrl } = useApi()
 const qty = ref(1)
 
 const { data: product, pending } = await useAsyncData(`product-${route.params.slug}`, async () => {
-  const res = await apiFetch(`/products/${route.params.slug}`)
-  return res.data
-})
+  try {
+    const res = await apiFetch(`/products/${route.params.slug}`)
+    return res.data
+  } catch {
+    return null
+  }
+}, { default: () => null })
 
 const addToCart = () => {
   if (!product.value) return

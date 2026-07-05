@@ -48,9 +48,13 @@ definePageMeta({ layout: 'admin' })
 const { apiFetch, formatPrice, statusLabel } = useApi()
 
 const { data: stats, pending } = await useAsyncData('dashboard', async () => {
-  const res = await apiFetch('/admin/dashboard')
-  return res.data
-})
+  try {
+    const res = await apiFetch('/admin/dashboard')
+    return res.data
+  } catch {
+    return null
+  }
+}, { default: () => null })
 
 const orderChartLabels = computed(() => stats.value?.charts?.ordersByDay?.map((d: any) => d.date) || [])
 const orderChartData = computed(() => stats.value?.charts?.ordersByDay?.map((d: any) => d.count) || [])
