@@ -1,0 +1,31 @@
+{
+  "name": "irancell-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare || true"
+  },
+  "dependencies": {
+    "@pinia/nuxt": "^0.5.5",
+    "pinia": "^2.2.4",
+    "nuxt": "3.10.3",
+    "vue": "^3.5.12",
+    "vue-router": "^4.4.5"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.14"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "overrides": {
+    "nuxi": "3.10.0",
+    "nitropack": "2.9.7"
+  }
+}

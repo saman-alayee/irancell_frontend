@@ -1,0 +1,9 @@
+uploads/
+node_modules/
+.env
+dist/
+.output/
+.nuxt/
+*.log
+.DS_Store
+Thumbs.db

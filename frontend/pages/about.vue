@@ -1,0 +1,50 @@
+<template>
+  <div>
+    <section class="bg-irancell-black text-white py-16">
+      <div class="container mx-auto px-4 text-center">
+        <h1 class="text-3xl lg:text-4xl font-black mb-4">درباره ما</h1>
+        <p class="text-gray-400 max-w-xl mx-auto">نمایندگی رسمی ایرانسل — ارائه‌دهنده شماره‌های VIP و محصولات جانبی</p>
+      </div>
+    </section>
+
+    <section class="py-16">
+      <div class="container mx-auto px-4 max-w-3xl">
+        <div class="prose prose-lg dark:prose-invert mx-auto space-y-6 text-body leading-relaxed">
+          <p>
+            ما به‌عنوان <strong>نمایندگی رسمی ایرانسل</strong>، با بیش از ۱۰ سال تجربه در حوزه فروش شماره‌های رند و محصولات مخابراتی،
+            خدمات حرفه‌ای و مطمئن به مشتریان ارائه می‌دهیم.
+          </p>
+          <p>
+            هر ماه بیش از <strong>۲۰۰۰ شماره جدید</strong> دریافت می‌کنیم و با ارسال لینک اختصاصی، امکان خرید آنلاین سریع و آسان را فراهم کرده‌ایم.
+          </p>
+
+          <h2 class="text-xl font-bold text-heading mt-10">ارزش‌های ما</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 not-prose">
+            <div v-for="v in values" :key="v.title" class="card p-5">
+              <div class="text-2xl mb-2">{{ v.icon }}</div>
+              <h3 class="font-bold mb-1">{{ v.title }}</h3>
+              <p class="text-sm text-muted">{{ v.desc }}</p>
+            </div>
+          </div>
+
+          <h2 class="text-xl font-bold text-heading mt-10">تماس با ما</h2>
+          <ul class="space-y-2 not-prose">
+            <li>📞 تلفن: ۰۲۱-۱۲۳۴۵۶۷۸</li>
+            <li>📧 ایمیل: info@example.com</li>
+            <li>🕐 ساعات کاری: شنبه تا پنج‌شنبه، ۹ تا ۱۸</li>
+            <li>📍 تهران، ایران</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+</template>
+
+<script setup lang="ts">
+const values = [
+  { icon: '✅', title: 'اصالت', desc: 'تمامی محصولات و سیم‌کارت‌ها اصل و دارای ضمانت' },
+  { icon: '⚡', title: 'سرعت', desc: 'تحویل و فعال‌سازی در سریع‌ترین زمان ممکن' },
+  { icon: '🤝', title: 'اعتماد', desc: 'شفافیت کامل در قیمت‌گذاری و فرآیند خرید' },
+  { icon: '💬', title: 'پشتیبانی', desc: 'تیم پشتیبانی متخصص در تمام مراحل' },
+]
+</script>
