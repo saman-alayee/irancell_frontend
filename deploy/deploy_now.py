@@ -72,6 +72,17 @@ def main():
         steps = [
             f'tar -xzf /tmp/irancell-deploy.tar.gz -C {REMOTE}',
             f"sed -i 's/\\r$//' {REMOTE}/deploy/*.sh {REMOTE}/deploy/*.cjs 2>/dev/null || true",
+            f"grep -q '^IRANCELL_SHOP_API_BASE=' {REMOTE}/backend/.env 2>/dev/null || "
+            f"printf '\\nIRANCELL_SHOP_API_BASE=https://apishop.irancell.ir\\nIRANCELL_SHOP_CHANNEL=eShop\\n"
+            f"IRANCELL_SHOP_DEV_MODE=false\\nIRANCELL_SHOP_TIMEOUT_MS=12000\\nIRANCELL_LOOKUP_DELAY_MS=250\\n"
+            f"IRANCELL_LOOKUP_CONCURRENCY=4\\n' "
+            f">> {REMOTE}/backend/.env",
+            f"sed -i 's/^IRANCELL_SHOP_DEV_MODE=.*/IRANCELL_SHOP_DEV_MODE=false/' {REMOTE}/backend/.env 2>/dev/null || true",
+            f"grep -q '^SMS_IR_TEMPLATE_ID=' {REMOTE}/backend/.env 2>/dev/null && "
+            f"sed -i 's/^SMS_IR_TEMPLATE_ID=.*/SMS_IR_TEMPLATE_ID=553188/' {REMOTE}/backend/.env || "
+            f"echo 'SMS_IR_TEMPLATE_ID=553188' >> {REMOTE}/backend/.env",
+            f"grep -q '^SMS_IR_CODE_PARAM=' {REMOTE}/backend/.env 2>/dev/null || "
+            f"echo 'SMS_IR_CODE_PARAM=VERIFICATIONCODE' >> {REMOTE}/backend/.env",
             f'cd {REMOTE}/backend && npm install --omit=dev --ignore-scripts',
             f'cd {REMOTE}/frontend && npm install --ignore-scripts',
             f'cd {REMOTE}/frontend && npm run build',

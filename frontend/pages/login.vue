@@ -110,6 +110,13 @@ definePageMeta({ layout: 'default', middleware: 'guest-only' })
 
 const userStore = useUserStore()
 const router = useRouter()
+const route = useRoute()
+
+const afterLoginPath = () => {
+  const redirect = route.query.redirect as string
+  if (redirect && redirect.startsWith('/') && !redirect.startsWith('//')) return redirect
+  return '/'
+}
 const mode = ref<'password' | 'otp'>('password')
 const form = reactive({ mobile: '', password: '', code: '' })
 const loading = ref(false)
@@ -183,7 +190,7 @@ const submitPassword = async () => {
   error.value = ''
   try {
     await userStore.login(form.mobile, form.password)
-    router.push('/')
+    router.push(afterLoginPath())
   } catch (e: any) {
     error.value = e.message
   } finally {
@@ -204,7 +211,7 @@ const submitOtp = async () => {
   error.value = ''
   try {
     await userStore.loginWithOtp(form.mobile, form.code)
-    router.push('/')
+    router.push(afterLoginPath())
   } catch (e: any) {
     error.value = e.message
   } finally {

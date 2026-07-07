@@ -5,6 +5,7 @@ const productRepository = require('../repositories/ProductRepository');
 const numberService = require('./NumberService');
 const discountService = require('./DiscountService');
 const zarinPalService = require('./ZarinPalService');
+const smsService = require('./SmsService');
 const AppError = require('../utils/AppError');
 const { generateOrderNumber, normalizeMobile } = require('../utils/helpers');
 
@@ -14,18 +15,19 @@ class OrderService {
 
     for (const cartItem of cartItems) {
       if (cartItem.type === 'number') {
-        const num = await numberRepository.findByNumber(cartItem.number);
-        if (!num) throw new AppError(`Number ${cartItem.number} not found`, 404);
-        if (num.status !== 'available') {
-          throw new AppError(`Number ${cartItem.number} is not available`, 400);
+        const priced = await numberService.lookupForShop(cartItem.number);
+        if (!priced.available) {
+          throw new AppError(`شماره ${cartItem.number} در ایرانسل موجود نیست`, 400);
         }
+        const num = await numberRepository.findByNumber(cartItem.number);
         items.push({
           type: 'number',
-          numberId: num._id,
-          title: num.number,
+          number: priced.number,
+          numberId: num?._id,
+          title: priced.number,
           quantity: 1,
-          unitPrice: num.price,
-          totalPrice: num.price,
+          unitPrice: priced.price,
+          totalPrice: priced.price,
         });
       } else if (cartItem.type === 'product') {
         const product = await productRepository.findById(cartItem.productId);
@@ -79,7 +81,7 @@ class OrderService {
     });
 
     for (const item of items) {
-      if (item.type === 'number') {
+      if (item.type === 'number' && item.numberId) {
         await numberService.reserve(item.numberId);
       }
     }
@@ -148,6 +150,13 @@ class OrderService {
     }
 
     const updatedOrder = await orderRepository.findById(order._id);
+
+    smsService.sendPaymentSuccess(
+      updatedOrder.user.mobile,
+      updatedOrder.orderNumber,
+      verifyResult.refId
+    ).catch((err) => console.error('[SMS] payment success notify:', err.message));
+
     return { order: updatedOrder, refId: verifyResult.refId };
   }
 
@@ -162,6 +171,14 @@ class OrderService {
       return result.items;
     }
     throw new AppError('Order number or mobile required', 400);
+  }
+
+  async listMine(user, query = {}) {
+    const options = {
+      page: Number(query.page) || 1,
+      limit: Math.min(Number(query.limit) || 20, 50),
+    };
+    return orderRepository.findByMobile(normalizeMobile(user.mobile), options);
   }
 
   async adminList(query) {

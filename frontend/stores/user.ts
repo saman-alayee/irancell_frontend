@@ -9,6 +9,7 @@ export const useUserStore = defineStore('user', {
       lastName: string
       fatherName?: string
       nationalId?: string
+      address?: string
       mobile: string
       secondMobile?: string
       email?: string
@@ -42,6 +43,7 @@ export const useUserStore = defineStore('user', {
       lastName: string
       fatherName: string
       nationalId: string
+      address: string
       mobile: string
       secondMobile: string
       email?: string

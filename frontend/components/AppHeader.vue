@@ -9,15 +9,22 @@
         <nav class="hidden lg:flex items-center gap-5 text-sm">
           <NuxtLink to="/" class="hover:text-irancell-yellow transition">صفحه اصلی</NuxtLink>
           <NuxtLink to="/numbers" class="hover:text-irancell-yellow transition">شماره‌ها</NuxtLink>
-          <NuxtLink to="/check-number" class="hover:text-irancell-yellow transition">بررسی شماره</NuxtLink>
+          <NuxtLink to="/sim-search" class="hover:text-irancell-yellow transition">جستجوی شماره</NuxtLink>
           <NuxtLink to="/products" class="hover:text-irancell-yellow transition">محصولات</NuxtLink>
+          <NuxtLink v-if="userStore.isLoggedIn" to="/orders" class="hover:text-irancell-yellow transition">سفارش‌های من</NuxtLink>
           <NuxtLink to="/order-tracking" class="hover:text-irancell-yellow transition">پیگیری سفارش</NuxtLink>
           <NuxtLink to="/about" class="hover:text-irancell-yellow transition">درباره ما</NuxtLink>
         </nav>
 
         <div class="flex items-center gap-2">
           <template v-if="userStore.isLoggedIn">
-            <span class="hidden sm:block text-sm text-gray-300">{{ userStore.fullName }}</span>
+            <NuxtLink
+              to="/orders"
+              class="max-w-[7rem] sm:max-w-none truncate text-sm text-irancell-yellow hover:underline px-1"
+              :title="userStore.fullName"
+            >
+              {{ userStore.user?.lastName || userStore.fullName }}
+            </NuxtLink>
             <button class="text-sm hover:text-irancell-yellow transition px-2" @click="logout">خروج</button>
           </template>
           <template v-else>
@@ -47,11 +54,19 @@
       </div>
 
       <div v-if="menuOpen" class="lg:hidden pb-4 border-t border-white/10 pt-4">
+        <div v-if="userStore.isLoggedIn" class="mb-4 pb-4 border-b border-white/10">
+          <p class="text-sm text-gray-400">حساب کاربری</p>
+          <p class="font-bold text-irancell-yellow mt-1">{{ userStore.fullName }}</p>
+          <NuxtLink to="/orders" class="block mt-3 py-2 text-sm hover:text-irancell-yellow" @click="menuOpen = false">
+            📦 سفارش‌های من
+          </NuxtLink>
+        </div>
         <nav class="flex flex-col gap-3">
           <NuxtLink to="/" class="py-2 hover:text-irancell-yellow" @click="menuOpen = false">صفحه اصلی</NuxtLink>
           <NuxtLink to="/numbers" class="py-2 hover:text-irancell-yellow" @click="menuOpen = false">شماره‌ها</NuxtLink>
-          <NuxtLink to="/check-number" class="py-2 hover:text-irancell-yellow" @click="menuOpen = false">بررسی شماره</NuxtLink>
+          <NuxtLink to="/sim-search" class="py-2 hover:text-irancell-yellow" @click="menuOpen = false">جستجوی شماره</NuxtLink>
           <NuxtLink to="/products" class="py-2 hover:text-irancell-yellow" @click="menuOpen = false">محصولات</NuxtLink>
+          <NuxtLink v-if="userStore.isLoggedIn" to="/orders" class="py-2 hover:text-irancell-yellow" @click="menuOpen = false">سفارش‌های من</NuxtLink>
           <NuxtLink to="/order-tracking" class="py-2 hover:text-irancell-yellow" @click="menuOpen = false">پیگیری سفارش</NuxtLink>
           <NuxtLink to="/about" class="py-2 hover:text-irancell-yellow" @click="menuOpen = false">درباره ما</NuxtLink>
           <NuxtLink to="/terms" class="py-2 hover:text-irancell-yellow" @click="menuOpen = false">قوانین</NuxtLink>

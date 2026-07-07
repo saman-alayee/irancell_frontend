@@ -24,7 +24,7 @@ module.exports = {
         NODE_ENV: 'production',
         NITRO_PORT: 3000,
         NITRO_HOST: '127.0.0.1',
-        NUXT_PUBLIC_API_BASE: 'http://85.208.253.193/api',
+        NUXT_PUBLIC_API_BASE: 'https://irancell-31038.ir/api',
         API_BASE_INTERNAL: 'http://127.0.0.1:3001/api',
       },
     },

@@ -15,6 +15,17 @@ module.exports = {
     apiKey: (process.env.SMS_IR_API_KEY || '').trim(),
     templateId: (process.env.SMS_IR_TEMPLATE_ID || '').trim(),
     codeParam: (process.env.SMS_IR_CODE_PARAM || 'VERIFICATIONCODE').trim(),
+    paymentTemplateId: (process.env.SMS_IR_PAYMENT_TEMPLATE_ID || '').trim(),
+    paymentOrderParam: (process.env.SMS_IR_PAYMENT_ORDER_PARAM || 'ORDERNUMBER').trim(),
+    paymentRefParam: (process.env.SMS_IR_PAYMENT_REF_PARAM || 'REFID').trim(),
     devMode: process.env.SMS_IR_DEV_MODE === 'true',
+  },
+  irancellShop: {
+    apiBase: process.env.IRANCELL_SHOP_API_BASE || 'https://apishop.irancell.ir',
+    channel: process.env.IRANCELL_SHOP_CHANNEL || 'eShop',
+    devMode: process.env.IRANCELL_SHOP_DEV_MODE === 'true',
+    timeoutMs: Number(process.env.IRANCELL_SHOP_TIMEOUT_MS) || 12000,
+    lookupDelayMs: Number(process.env.IRANCELL_LOOKUP_DELAY_MS) || 250,
+    lookupConcurrency: Number(process.env.IRANCELL_LOOKUP_CONCURRENCY) || 4,
   },
 };

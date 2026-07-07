@@ -12,6 +12,7 @@ class UserService {
       lastName: user.lastName,
       fatherName: user.fatherName,
       nationalId: user.nationalId,
+      address: user.address,
       mobile: user.mobile,
       secondMobile: user.secondMobile,
       email: user.email,
@@ -27,7 +28,7 @@ class UserService {
     return otpService.send(mobile, purpose);
   }
 
-  async register({ firstName, lastName, fatherName, nationalId, mobile, secondMobile, email, password, code }) {
+  async register({ firstName, lastName, fatherName, nationalId, address, mobile, secondMobile, email, password, code }) {
     await otpService.verify(mobile, code, 'register');
 
     const normalizedMobile = normalizeMobile(mobile);
@@ -45,6 +46,7 @@ class UserService {
       lastName,
       fatherName,
       nationalId: normalizedNationalId,
+      address: String(address).trim(),
       mobile: normalizedMobile,
       secondMobile: normalizedSecond,
       email,

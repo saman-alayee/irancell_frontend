@@ -5,9 +5,19 @@ const config = require('./config');
 
 const start = async () => {
   await connectDB();
-  app.listen(config.port, () => {
+  if (config.irancellShop.devMode) {
+    console.warn(
+      '⚠️  IRANCELL_SHOP_DEV_MODE=true — فقط ۴ شماره تستی در استعلام ایرانسل «موجود» نشان داده می‌شوند!'
+    );
+  } else {
+    console.log('Irancell shop lookup: live API (DEV_MODE off)');
+  }
+  const server = app.listen(config.port, () => {
     console.log(`Server running on port ${config.port}`);
   });
+  // Excel + Irancell lookup for large files can take several minutes
+  server.timeout = 15 * 60 * 1000;
+  server.requestTimeout = 15 * 60 * 1000;
 };
 
 start().catch((err) => {

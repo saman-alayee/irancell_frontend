@@ -11,14 +11,12 @@
         </div>
 
         <form class="space-y-4" @submit.prevent="otpSent ? submit() : sendOtp()">
-          <div class="grid grid-cols-2 gap-4">
-            <FormField label="نام" hint="نام واقعی شما" required :error="fieldErrors.firstName">
-              <input v-model="form.firstName" class="input-field" required :disabled="loading" @input="clearError('firstName')" />
-            </FormField>
-            <FormField label="نام خانوادگی" hint="نام خانوادگی واقعی" required :error="fieldErrors.lastName">
-              <input v-model="form.lastName" class="input-field" required :disabled="loading" @input="clearError('lastName')" />
-            </FormField>
-          </div>
+          <FormField label="نام خانوادگی" hint="نام خانوادگی واقعی خریدار سیم‌کارت مورد نظر — مطابق شناسنامه" required :error="fieldErrors.lastName">
+            <input v-model="form.lastName" class="input-field" required :disabled="loading" @input="clearError('lastName')" />
+          </FormField>
+          <FormField label="نام" hint="نام واقعی شما" required :error="fieldErrors.firstName">
+            <input v-model="form.firstName" class="input-field" required :disabled="loading" @input="clearError('firstName')" />
+          </FormField>
 
           <FormField label="نام پدر" hint="نام پدر برای ثبت‌نام سیم‌کارت" required :error="fieldErrors.fatherName">
             <input v-model="form.fatherName" class="input-field" required :disabled="loading" @input="clearError('fatherName')" />
@@ -39,6 +37,16 @@
             />
           </FormField>
 
+          <FormField label="آدرس پستی" hint="آدرس کامل برای ارسال سیم‌کارت" required :error="fieldErrors.address">
+            <textarea
+              v-model="form.address"
+              class="input-field min-h-[88px] resize-y"
+              required
+              :disabled="loading"
+              @input="clearError('address')"
+            />
+          </FormField>
+
           <FormField label="شماره موبایل" hint="کد تأیید به این شماره ارسال می‌شود" required :error="fieldErrors.mobile">
             <input
               v-model="form.mobile"
@@ -53,7 +61,7 @@
             />
           </FormField>
 
-          <FormField label="شماره تماس دوم" hint="شماره جایگزین برای تماس کارشناسان" required :error="fieldErrors.secondMobile">
+          <FormField label="شماره تلفن جایگزین" hint="شماره دیگری برای تماس کارشناسان" required :error="fieldErrors.secondMobile">
             <input
               v-model="form.secondMobile"
               type="tel"
@@ -149,6 +157,7 @@ const form = reactive({
   lastName: '',
   fatherName: '',
   nationalId: '',
+  address: '',
   mobile: '',
   secondMobile: '',
   email: '',
@@ -238,6 +247,7 @@ const submit = async () => {
       lastName: form.lastName.trim(),
       fatherName: form.fatherName.trim(),
       nationalId: form.nationalId,
+      address: form.address.trim(),
       mobile: form.mobile,
       secondMobile: form.secondMobile,
       email: form.email.trim() || undefined,

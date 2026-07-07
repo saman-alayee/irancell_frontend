@@ -4,28 +4,31 @@ const AppError = require('../utils/AppError');
 const { toSmsIrMobile } = require('../utils/helpers');
 
 class SmsService {
-  async sendVerifyCode(mobile, code) {
-    const { apiKey, templateId, codeParam, devMode } = config.smsIr;
+  async _sendTemplate(mobile, templateId, parameters, { throwOnError = true } = {}) {
+    const { apiKey, devMode } = config.smsIr;
 
     if (devMode) {
-      console.log(`[SMS DEV] OTP for ${mobile}: ${code}`);
+      console.log(`[SMS DEV] template ${templateId} to ${mobile}:`, parameters);
       return { dev: true };
     }
 
     if (!apiKey) {
-      throw new AppError('تنظیمات پیامک ناقص است — API Key تعریف نشده', 500);
+      if (throwOnError) throw new AppError('تنظیمات پیامک ناقص است — API Key تعریف نشده', 500);
+      return null;
     }
 
     if (!templateId) {
-      throw new AppError('تنظیمات پیامک ناقص است — TemplateId تعریف نشده', 500);
+      if (throwOnError) throw new AppError('تنظیمات پیامک ناقص است — TemplateId تعریف نشده', 500);
+      return null;
     }
 
     const payload = {
       mobile: toSmsIrMobile(mobile),
       templateId: Number(templateId),
-      parameters: [
-        { name: codeParam, value: String(code) },
-      ],
+      parameters: parameters.map(({ name, value }) => ({
+        name,
+        value: String(value),
+      })),
     };
 
     try {
@@ -45,25 +48,45 @@ class SmsService {
       const data = response.data;
       if (data?.status !== 1) {
         const msg = data?.message || 'ارسال پیامک ناموفق بود';
-        if (process.env.NODE_ENV !== 'production') {
-          console.error('[SMS.ir] verify failed:', { payload: { ...payload, parameters: '[hidden]' }, response: data });
-        }
-        throw new AppError(msg, 502);
+        if (throwOnError) throw new AppError(msg, 502);
+        console.error('[SMS.ir] template failed:', msg);
+        return null;
       }
 
       return data;
     } catch (err) {
-      if (err instanceof AppError) throw err;
+      if (err instanceof AppError) {
+        if (throwOnError) throw err;
+        console.error('[SMS.ir]', err.message);
+        return null;
+      }
 
       const apiData = err.response?.data;
       const msg = apiData?.message || apiData?.Message || err.message;
-
-      if (process.env.NODE_ENV !== 'production') {
-        console.error('[SMS.ir] request error:', apiData || err.message);
-      }
-
-      throw new AppError(`خطا در ارسال پیامک: ${msg}`, 502);
+      if (throwOnError) throw new AppError(`خطا در ارسال پیامک: ${msg}`, 502);
+      console.error('[SMS.ir] request error:', msg);
+      return null;
     }
+  }
+
+  async sendVerifyCode(mobile, code) {
+    const { templateId, codeParam } = config.smsIr;
+    return this._sendTemplate(mobile, templateId, [{ name: codeParam, value: code }]);
+  }
+
+  async sendPaymentSuccess(mobile, orderNumber, refId) {
+    const { paymentTemplateId, paymentOrderParam, paymentRefParam } = config.smsIr;
+    if (!paymentTemplateId) return null;
+
+    return this._sendTemplate(
+      mobile,
+      paymentTemplateId,
+      [
+        { name: paymentOrderParam, value: orderNumber },
+        { name: paymentRefParam, value: refId || '—' },
+      ],
+      { throwOnError: false }
+    );
   }
 }
 

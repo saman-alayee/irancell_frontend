@@ -20,6 +20,7 @@ export const validateRegisterForm = (form: {
   lastName: string
   fatherName: string
   nationalId: string
+  address: string
   mobile: string
   secondMobile: string
   email?: string
@@ -35,13 +36,15 @@ export const validateRegisterForm = (form: {
   if (!form.nationalId.trim()) errors.nationalId = 'کد ملی الزامی است'
   else if (!isValidNationalId(form.nationalId)) errors.nationalId = 'کد ملی نامعتبر است'
 
+  if (!form.address.trim()) errors.address = 'آدرس پستی الزامی است'
+
   if (!form.mobile.trim()) errors.mobile = 'شماره موبایل الزامی است'
   else if (!isValidMobile(form.mobile)) errors.mobile = 'شماره موبایل نامعتبر است'
 
-  if (!form.secondMobile.trim()) errors.secondMobile = 'شماره تماس دوم الزامی است'
-  else if (!isValidMobile(form.secondMobile)) errors.secondMobile = 'شماره تماس دوم نامعتبر است'
+  if (!form.secondMobile.trim()) errors.secondMobile = 'شماره تلفن جایگزین الزامی است'
+  else if (!isValidMobile(form.secondMobile)) errors.secondMobile = 'شماره تلفن جایگزین نامعتبر است'
   else if (sanitizeMobile(form.mobile) === sanitizeMobile(form.secondMobile)) {
-    errors.secondMobile = 'شماره تماس دوم نباید با موبایل اصلی یکسان باشد'
+    errors.secondMobile = 'شماره تلفن جایگزین نباید با موبایل اصلی یکسان باشد'
   }
 
   if (form.email?.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {

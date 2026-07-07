@@ -12,7 +12,7 @@
     </div>
 
     <div v-else class="max-w-3xl mx-auto">
-      <div class="card divide-default mb-6">
+      <div class="card divide-default mb-6" dir="ltr">
         <div v-for="item in cartStore.items" :key="item.id" class="p-4 flex items-center gap-4">
           <div class="w-12 h-12 bg-irancell-yellow/20 rounded-xl flex items-center justify-center text-xl flex-shrink-0">
             {{ item.type === 'number' ? '📱' : '📦' }}
@@ -72,6 +72,7 @@
 
 <script setup lang="ts">
 const cartStore = useCartStore()
+const toast = useToastStore()
 const { formatPrice, formatNumber, apiFetch } = useApi()
 const discountInput = ref('')
 
@@ -86,7 +87,7 @@ const applyDiscount = async () => {
     })
     cartStore.setDiscount(discountInput.value.toUpperCase(), res.data.amount)
   } catch (e: any) {
-    alert(e.message)
+    toast.error(e.message)
   }
 }
 </script>

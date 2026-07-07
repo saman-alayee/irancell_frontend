@@ -67,6 +67,7 @@
 <script setup lang="ts">
 const route = useRoute()
 const cartStore = useCartStore()
+const toast = useToastStore()
 const { apiFetch, resolveImageUrl } = useApi()
 const qty = ref(1)
 const activeIndex = ref(0)
@@ -87,6 +88,6 @@ watch(() => product.value?.images, () => { activeIndex.value = 0 })
 const addToCart = () => {
   if (!product.value) return
   cartStore.addProduct(product.value, qty.value)
-  alert('محصول به سبد خرید اضافه شد')
+  toast.success('محصول به سبد خرید اضافه شد')
 }
 </script>

@@ -68,6 +68,7 @@
 definePageMeta({ layout: 'admin' })
 
 const { apiFetch } = useApi()
+const toast = useToastStore()
 const admins = ref<any[]>([])
 const page = ref(1)
 const pagination = ref({ pages: 1, total: 0 })
@@ -104,7 +105,7 @@ const save = async () => {
     }
     showForm.value = false
     await fetchAdmins()
-  } catch (e: any) { alert(e.message) }
+  } catch (e: any) { toast.error(e.message) }
 }
 
 const remove = async (id: string) => {
@@ -112,7 +113,7 @@ const remove = async (id: string) => {
   try {
     await apiFetch(`/admin/admins/${id}`, { method: 'DELETE' })
     await fetchAdmins()
-  } catch (e: any) { alert(e.message) }
+  } catch (e: any) { toast.error(e.message) }
 }
 
 onMounted(fetchAdmins)

@@ -97,6 +97,7 @@
 definePageMeta({ layout: 'admin' })
 
 const { apiFetch, resolveImageUrl } = useApi()
+const toast = useToastStore()
 const products = ref<any[]>([])
 const page = ref(1)
 const search = ref('')
@@ -163,7 +164,7 @@ const save = async () => {
     }
     showForm.value = false
     await fetchProducts()
-  } catch (e: any) { alert(e.message) }
+  } catch (e: any) { toast.error(e.message) }
 }
 
 const remove = async (id: string) => {

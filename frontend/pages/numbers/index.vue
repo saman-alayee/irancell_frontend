@@ -51,9 +51,9 @@
             {{ formatNumber(num.number) }}
           </p>
           <NumberDigits :number="num.number" class="mb-3" />
-          <div class="flex items-center justify-between">
-            <p class="font-bold">{{ formatPrice(num.price) }}</p>
-            <span class="badge-green text-xs px-2 py-1 rounded-full">موجود</span>
+          <div class="flex items-end justify-between gap-2">
+            <NumberPriceDisplay :price="num.price" size="sm" align="start" />
+            <span class="badge-green text-xs px-2 py-1 rounded-full shrink-0">موجود</span>
           </div>
         </NuxtLink>
       </div>

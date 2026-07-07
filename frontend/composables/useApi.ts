@@ -23,7 +23,9 @@ export const useApi = () => {
   const getAuthToken = (url: string): string | null => {
     if (!import.meta.client) return null
     if (url.startsWith('/admin')) return localStorage.getItem('admin_token')
-    if (url.startsWith('/auth/me')) return localStorage.getItem('user_token')
+    if (url.startsWith('/auth/me') || url.startsWith('/orders/mine')) {
+      return localStorage.getItem('user_token')
+    }
     return null
   }
 
@@ -87,7 +89,7 @@ export const formatPrice = (price: number) =>
 export const formatNumber = (num: string) => {
   const d = num.replace(/\D/g, '')
   if (d.length === 11 && d.startsWith('09')) {
-    return `${d.slice(0, 4)}  ${d.slice(4, 6)}  ${d.slice(6, 9)}  ${d.slice(9, 11)}`
+    return `${d.slice(0, 4)} ${d.slice(4, 6)} ${d.slice(6, 8)} ${d.slice(8, 11)}`
   }
   return num
 }

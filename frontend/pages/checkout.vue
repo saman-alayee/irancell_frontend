@@ -4,16 +4,14 @@
 
     <div class="max-w-lg mx-auto">
       <form class="card p-6 space-y-4" @submit.prevent="submit">
-        <div class="grid grid-cols-2 gap-4">
-          <FormField label="نام" hint="نام واقعی خریدار — برای صدور فاکتور" required>
-            <input v-model="form.firstName" class="input-field" required />
-          </FormField>
-          <FormField label="نام خانوادگی" hint="نام خانوادگی واقعی خریدار" required>
-            <input v-model="form.lastName" class="input-field" required />
-          </FormField>
-        </div>
+        <FormField label="نام خانوادگی" hint="نام خانوادگی واقعی خریدار سیم‌کارت مورد نظر — مطابق شناسنامه" required>
+          <input v-model="form.lastName" class="input-field" required autofocus />
+        </FormField>
+        <FormField label="نام" hint="نام واقعی خریدار — برای صدور فاکتور" required>
+          <input v-model="form.firstName" class="input-field" required />
+        </FormField>
         <FormField label="شماره موبایل" hint="شماره ۱۱ رقمی — برای پیگیری سفارش و اطلاع‌رسانی" required>
-          <input v-model="form.mobile" type="tel" maxlength="11" class="input-field" dir="ltr" required placeholder="09xxxxxxxxx" />
+          <input v-model="form.mobile" type="tel" maxlength="11" class="input-field text-left" dir="ltr" required placeholder="09xxxxxxxxx" />
         </FormField>
         <FormField label="ایمیل" hint="اختیاری — رسید خرید به این ایمیل ارسال می‌شود">
           <input v-model="form.email" type="email" class="input-field" dir="ltr" />
@@ -47,6 +45,7 @@ const cartStore = useCartStore()
 const userStore = useUserStore()
 const router = useRouter()
 const { apiFetch, formatPrice } = useApi()
+const toast = useToastStore()
 
 const form = reactive({ firstName: '', lastName: '', mobile: '', email: '' })
 const acceptTerms = ref(false)
@@ -79,7 +78,7 @@ const submit = async () => {
     cartStore.clear()
     window.location.href = payRes.data.paymentUrl
   } catch (e: any) {
-    alert(e.message)
+    toast.error(e.message)
   } finally {
     loading.value = false
   }

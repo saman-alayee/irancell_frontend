@@ -26,38 +26,19 @@
           <p class="text-gray-300 text-lg mb-10 max-w-xl mx-auto">
             شماره VIP، مودم 4G و محصولات دیجیتال — ارسال به سراسر کشور
           </p>
-          <div class="max-w-md mx-auto mb-8">
-            <NumberSearch v-model="searchQuery" variant="hero" placeholder="جستجوی شماره: 09001071252" @search="doSearch" />
-          </div>
-          <div class="flex flex-wrap justify-center gap-4">
+          <form class="max-w-lg mx-auto mb-4" @submit.prevent="doHomeSearch">
+            <NumberSearch
+              v-model="homeSearchQuery"
+              variant="hero"
+              placeholder="مثال: 09309988235"
+              @search="doHomeSearch"
+            />
+          </form>
+          <div class="flex flex-wrap justify-center gap-4 mt-8">
             <NuxtLink to="/numbers" class="btn-primary">مشاهده شماره‌ها</NuxtLink>
             <NuxtLink to="/products" class="btn-outline border-white text-white hover:bg-white hover:text-irancell-black">محصولات</NuxtLink>
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- Search Results -->
-    <section v-if="searchResults.length" class="container mx-auto px-4 -mt-6 relative z-10 mb-8">
-      <div class="card max-w-xl mx-auto divide-default shadow-xl overflow-hidden">
-        <div class="bg-irancell-yellow/90 px-4 py-2 text-center text-sm font-bold text-irancell-black">
-          {{ searchResults.length }} نتیجه یافت شد
-        </div>
-        <NuxtLink
-          v-for="num in searchResults"
-          :key="num._id"
-          :to="`/i/${num.number}`"
-          class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 hover-row"
-        >
-          <div>
-            <span class="font-black text-lg tracking-wider block mb-2" dir="ltr">{{ formatNumber(num.number) }}</span>
-            <NumberDigits :number="num.number" />
-          </div>
-          <div class="flex items-center gap-3 sm:flex-col sm:items-end">
-            <span class="font-bold">{{ formatPrice(num.price) }}</span>
-            <span :class="statusColor[num.status]" class="text-xs px-2 py-1 rounded-full whitespace-nowrap">{{ statusLabel[num.status] }}</span>
-          </div>
-        </NuxtLink>
       </div>
     </section>
 
@@ -82,7 +63,7 @@
             <p class="text-muted text-sm">منتخب شماره‌های VIP موجود</p>
           </div>
           <div class="flex flex-wrap gap-3">
-            <NuxtLink to="/check-number" class="btn-outline py-2 px-4 text-sm">بررسی شماره</NuxtLink>
+            <NuxtLink to="/sim-search" class="btn-outline py-2 px-4 text-sm">جستجوی شماره</NuxtLink>
             <NuxtLink to="/numbers" class="text-sm font-bold link-accent hover:text-irancell-yellow transition">مشاهده همه ←</NuxtLink>
           </div>
         </div>
@@ -102,9 +83,9 @@
                 <NumberDigits :number="num.number" />
               </div>
             </div>
-            <div class="p-4 flex items-center justify-between">
-              <p class="font-bold text-lg">{{ formatPrice(num.price) }}</p>
-              <span class="badge-green text-xs px-2 py-1 rounded-full">موجود</span>
+            <div class="p-4 flex items-center justify-between gap-2">
+              <NumberPriceDisplay :price="num.price" size="sm" align="start" />
+              <span class="badge-green text-xs px-2 py-1 rounded-full shrink-0">موجود</span>
             </div>
           </NuxtLink>
         </div>
@@ -160,7 +141,7 @@
     <section class="py-16 bg-irancell-yellow">
       <div class="container mx-auto px-4 text-center">
         <h2 class="text-2xl lg:text-3xl font-black text-irancell-black mb-4">همین الان شماره رند خود را پیدا کنید</h2>
-        <p class="text-irancell-black/70 mb-8">بیش از ۲۰۰۰ شماره جدید هر ماه</p>
+        <p class="text-irancell-black/70 mb-8">بیش از ۲۰۰۰۰ شماره جدید در ماه</p>
         <div class="flex flex-wrap justify-center gap-4">
           <NuxtLink to="/numbers" class="btn-secondary">مشاهده شماره‌ها</NuxtLink>
           <NuxtLink to="/products" class="btn-outline border-irancell-black">محصولات جانبی</NuxtLink>
@@ -171,14 +152,27 @@
 </template>
 
 <script setup lang="ts">
-const { apiFetch, formatPrice, formatNumber, statusLabel, statusColor, resolveImageUrl } = useApi()
-const searchQuery = ref('')
-const searchResults = ref<any[]>([])
+import { digitCount, payloadToQuery, type SimSearchPayload } from '~/utils/numberSearch'
+
+const router = useRouter()
+const { apiFetch, formatNumber, resolveImageUrl } = useApi()
+const toast = useToastStore()
+const homeSearchQuery = ref('')
 const featuredNumbers = ref<any[]>([])
 const featuredProducts = ref<any[]>([])
 
+const doHomeSearch = () => {
+  const q = homeSearchQuery.value.trim()
+  if (digitCount(q) < 3) {
+    toast.warning('حداقل ۳ رقم برای جستجو وارد کنید')
+    return
+  }
+  const payload: SimSearchPayload = { mode: 'simple', query: q }
+  router.push({ path: '/sim-search', query: payloadToQuery(payload) })
+}
+
 const stats = [
-  { value: '+۲۰۰۰', label: 'شماره جدید ماهانه' },
+  { value: '+۲۰۰۰۰', label: 'شماره جدید در ماه' },
   { value: '+۵۰۰۰', label: 'مشتری راضی' },
   { value: '۲۴/۷', label: 'پشتیبانی' },
   { value: '۱۰۰٪', label: 'ضمانت اصالت' },
@@ -190,14 +184,6 @@ const services = [
   { icon: '🔒', title: 'پرداخت امن', desc: 'درگاه معتبر زرین‌پال با رمزنگاری SSL' },
   { icon: '💬', title: 'پشتیبانی تخصصی', desc: 'مشاوره رایگان قبل و بعد از خرید' },
 ]
-
-const doSearch = async () => {
-  if (searchQuery.value.length < 3) return
-  try {
-    const res = await apiFetch(`/numbers/search?search=${searchQuery.value}&limit=10`)
-    searchResults.value = res.data
-  } catch { searchResults.value = [] }
-}
 
 onMounted(async () => {
   try {

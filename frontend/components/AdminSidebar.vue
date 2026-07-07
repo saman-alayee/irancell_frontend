@@ -33,6 +33,7 @@ const menuItems = [
   { to: '/admin', icon: '📊', label: 'داشبورد' },
   { to: '/admin/numbers', icon: '📱', label: 'مدیریت شماره‌ها' },
   { to: '/admin/numbers/import', icon: '📤', label: 'ورود گروهی' },
+  { to: '/admin/settings/pricing', icon: '💰', label: 'قیمت ایرانسل' },
   { to: '/admin/products', icon: '📦', label: 'مدیریت محصولات' },
   { to: '/admin/orders', icon: '🛒', label: 'مدیریت سفارش‌ها' },
   { to: '/admin/discounts', icon: '🏷️', label: 'مدیریت تخفیف' },

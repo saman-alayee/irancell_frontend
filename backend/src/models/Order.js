@@ -4,6 +4,7 @@ const orderItemSchema = new mongoose.Schema(
   {
     type: { type: String, enum: ['number', 'product'], required: true },
     numberId: { type: mongoose.Schema.Types.ObjectId, ref: 'Number' },
+    number: { type: String },
     productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
     title: { type: String, required: true },
     quantity: { type: Number, default: 1, min: 1 },

@@ -34,6 +34,11 @@ exports.track = asyncHandler(async (req, res) => {
   success(res, orders);
 });
 
+exports.listMine = asyncHandler(async (req, res) => {
+  const result = await orderService.listMine(req.user, req.query);
+  paginated(res, result.items, result.pagination);
+});
+
 exports.adminList = asyncHandler(async (req, res) => {
   const result = await orderService.adminList(req.query);
   paginated(res, result.items, result.pagination);

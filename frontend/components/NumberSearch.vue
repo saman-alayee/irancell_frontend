@@ -8,7 +8,7 @@
       :class="inputClass"
       dir="ltr"
       @input="onInput"
-      @keyup.enter="$emit('search')"
+      @keydown.enter.prevent="$emit('search')"
     />
     <button
       type="button"
@@ -42,7 +42,7 @@ const inputClass = computed(() => {
 })
 
 const onInput = (e: Event) => {
-  const val = (e.target as HTMLInputElement).value.replace(/\D/g, '').slice(0, 11)
+  const val = (e.target as HTMLInputElement).value.replace(/[^\d۰-۹]/g, '').slice(0, 11)
   emit('update:modelValue', val)
 }
 </script>

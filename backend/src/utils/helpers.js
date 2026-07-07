@@ -25,9 +25,17 @@ const normalizeMobile = (mobile) => {
 };
 
 const normalizeNumber = (num) => {
-  const cleaned = String(num).replace(/\D/g, '');
+  let s = String(num ?? '').trim();
+  s = s.replace(/[۰-۹]/g, (d) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)));
+  s = s.replace(/[\s\-–—()]/g, '');
+  if (/e/i.test(s)) {
+    const n = Number(s);
+    if (!Number.isNaN(n)) s = String(Math.round(n));
+  }
+  const cleaned = s.replace(/\D/g, '');
   if (cleaned.length === 11 && cleaned.startsWith('09')) return cleaned;
-  if (cleaned.length === 10 && cleaned.startsWith('9')) return '0' + cleaned;
+  if (cleaned.length === 10 && cleaned.startsWith('9')) return `0${cleaned}`;
+  if (cleaned.length === 12 && cleaned.startsWith('98')) return `0${cleaned.slice(2)}`;
   return cleaned;
 };
 

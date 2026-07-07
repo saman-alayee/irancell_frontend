@@ -1,5 +1,6 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 transition-colors relative">
+    <AppToast />
     <button
       class="absolute top-4 left-4 p-2 rounded-lg bg-white dark:bg-gray-800 border dark:border-gray-700 text-lg shadow-sm hover:shadow transition"
       :title="themeStore.dark ? 'حالت روشن' : 'حالت تاریک'"

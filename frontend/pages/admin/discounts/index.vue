@@ -62,6 +62,7 @@
 definePageMeta({ layout: 'admin' })
 
 const { apiFetch, formatPrice } = useApi()
+const toast = useToastStore()
 
 const discounts = ref<any[]>([])
 const page = ref(1)
@@ -108,7 +109,7 @@ const save = async () => {
     showForm.value = false
     await fetchDiscounts()
   } catch (e: any) {
-    alert(e.message)
+    toast.error(e.message)
   }
 }
 

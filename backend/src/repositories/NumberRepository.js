@@ -40,6 +40,12 @@ class NumberRepository extends BaseRepository {
   async findExistingNumbers(numberList) {
     return this.model.find({ number: { $in: numberList } }).select('number');
   }
+
+  async findAvailableStartingWith(prefix, limit = 100) {
+    const p = String(prefix || '').replace(/\D/g, '');
+    if (p.length < 8) return [];
+    return this.model.find({ status: 'available', number: new RegExp(`^${p}`) }).limit(limit).lean();
+  }
 }
 
 module.exports = new NumberRepository();

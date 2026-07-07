@@ -25,6 +25,7 @@ const productController = require('../controllers/productController');
 const orderController = require('../controllers/orderController');
 const discountController = require('../controllers/discountController');
 const excelController = require('../controllers/excelController');
+const shopSettingsController = require('../controllers/shopSettingsController');
 const adminManageController = require('../controllers/adminManageController');
 const uploadController = require('../controllers/uploadController');
 const rateLimit = require('../middleware/rateLimit');
@@ -36,6 +37,8 @@ const excelUpload = multer({ storage: multer.memoryStorage(), limits: { fileSize
 
 // Public routes
 router.get('/numbers/search', numberController.search);
+router.get('/numbers/sim-search', numberController.simSearch);
+router.get('/numbers/check/:number', numberController.checkNumber);
 router.get('/numbers/:number', numberController.getByNumber);
 router.get('/products', productController.list);
 router.get('/products/:slug', productController.getBySlug);
@@ -44,6 +47,7 @@ router.post('/discounts/validate', orderController.validateDiscount);
 router.post('/orders', checkoutValidator, validate, orderController.create);
 router.post('/orders/:id/pay', orderController.pay);
 router.get('/orders/track', orderController.track);
+router.get('/orders/mine', authUser, orderController.listMine);
 router.get('/payment/verify', orderController.verify);
 
 // User auth
@@ -77,6 +81,9 @@ router.put('/admin/numbers/:id', authAdmin, numberController.update);
 router.delete('/admin/numbers/:id', authAdmin, numberController.remove);
 router.post('/admin/numbers/import/preview', authAdmin, excelUpload.single('file'), excelController.preview);
 router.post('/admin/numbers/import', authAdmin, excelUpload.single('file'), excelController.import);
+router.get('/admin/settings/pricing', authAdmin, shopSettingsController.getPricing);
+router.put('/admin/settings/pricing', authAdmin, shopSettingsController.updatePricing);
+router.post('/admin/numbers/irancell-lookup', authAdmin, shopSettingsController.lookupNumber);
 
 // Admin products
 router.get('/admin/products', authAdmin, productController.adminList);

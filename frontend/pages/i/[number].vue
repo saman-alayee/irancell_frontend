@@ -9,12 +9,18 @@
         <div class="w-12 h-12 border-4 border-irancell-yellow border-t-transparent rounded-full animate-spin" />
       </div>
 
-      <div v-else-if="!numberData" class="text-center py-20">
+      <div v-else-if="invalidNumber" class="text-center py-20">
         <div class="text-6xl mb-4">❌</div>
-        <h1 class="text-2xl font-bold text-white mb-2">شماره یافت نشد</h1>
-        <p class="text-gray-400 mb-6">شماره مورد نظر در سیستم ثبت نشده است</p>
+        <h1 class="text-2xl font-bold text-white mb-2">شماره نامعتبر است</h1>
+        <NuxtLink to="/sim-search" class="btn-primary mt-6 inline-block">جستجوی شماره</NuxtLink>
+      </div>
+
+      <div v-else-if="!numberData?.available" class="text-center py-20">
+        <div class="text-6xl mb-4">😔</div>
+        <h1 class="text-2xl font-bold text-white mb-2">این شماره در ایرانسل موجود نیست</h1>
+        <p class="text-gray-400 mb-6" dir="ltr">{{ formatNumber(number) }}</p>
         <div class="flex flex-wrap justify-center gap-3">
-          <NuxtLink to="/numbers" class="btn-primary">مشاهده شماره‌های موجود</NuxtLink>
+          <NuxtLink to="/sim-search" class="btn-primary">جستجوی شماره مشابه</NuxtLink>
           <NuxtLink to="/" class="btn-outline border-white text-white">صفحه اصلی</NuxtLink>
         </div>
       </div>
@@ -32,44 +38,24 @@
           </div>
 
           <div class="p-6 lg:p-8">
-            <div v-if="numberData.status === 'sold'" class="text-center py-8">
-              <div class="text-5xl mb-4">🔴</div>
-              <h2 class="text-xl font-bold text-red-600 dark:text-red-400 mb-2">این شماره قبلاً فروخته شده است</h2>
-              <p class="text-muted mb-6">لطفاً شماره دیگری انتخاب کنید</p>
-              <NuxtLink to="/numbers" class="btn-outline">مشاهده شماره‌های موجود</NuxtLink>
+            <div class="mb-8">
+              <NumberPriceDisplay :price="numberData.price" size="lg" label="قیمت" />
             </div>
 
-            <div v-else-if="numberData.status === 'reserved'" class="text-center py-8">
-              <div class="text-5xl mb-4">⏳</div>
-              <h2 class="text-xl font-bold text-yellow-600 dark:text-yellow-400 mb-2">این شماره رزرو شده است</h2>
-              <p class="text-muted">لطفاً چند دقیقه دیگر مراجعه کنید</p>
+            <div class="space-y-3 mb-6">
+              <div v-for="feature in features" :key="feature" class="flex items-center gap-2 text-sm">
+                <span class="text-green-500">✓</span>
+                <span>{{ feature }}</span>
+              </div>
             </div>
 
-            <div v-else>
-              <div class="text-center mb-8">
-                <p class="text-muted mb-2">قیمت</p>
-                <p class="text-4xl font-black text-heading">{{ formatPrice(numberData.price) }}</p>
-              </div>
+            <button class="btn-primary w-full text-lg py-4" :disabled="addingToCart" @click="addToCart">
+              {{ addingToCart ? 'در حال بررسی...' : '🛒 افزودن به سبد خرید' }}
+            </button>
 
-              <div v-if="numberData.description" class="bg-subtle rounded-xl p-4 mb-6 text-sm text-body">
-                {{ numberData.description }}
-              </div>
-
-              <div class="space-y-3 mb-6">
-                <div v-for="feature in features" :key="feature" class="flex items-center gap-2 text-sm">
-                  <span class="text-green-500">✓</span>
-                  <span>{{ feature }}</span>
-                </div>
-              </div>
-
-              <button class="btn-primary w-full text-lg py-4" @click="addToCart">
-                🛒 افزودن به سبد خرید
-              </button>
-
-              <button class="btn-secondary w-full mt-3 py-4" @click="buyNow">
-                خرید فوری
-              </button>
-            </div>
+            <button class="btn-secondary w-full mt-3 py-4" :disabled="addingToCart" @click="buyNow">
+              خرید فوری
+            </button>
           </div>
         </div>
 
@@ -90,7 +76,12 @@ definePageMeta({ layout: 'default' })
 const route = useRoute()
 const router = useRouter()
 const cartStore = useCartStore()
-const { apiFetch, formatPrice, formatNumber } = useApi()
+const toast = useToastStore()
+cartStore.loadFromStorage()
+
+const addingToCart = ref(false)
+
+const { apiFetch, formatNumber } = useApi()
 
 const number = route.params.number as string
 
@@ -107,6 +98,8 @@ const { data: numberData, pending } = await useAsyncData(
   { default: () => null }
 )
 
+const invalidNumber = computed(() => !pending.value && !numberData.value)
+
 const features = [
   'اپراتور ایرانسل',
   'صفر ( بدون سابقه سلب امتیاز )',
@@ -121,18 +114,32 @@ const badges = [
   { icon: '✅', label: 'ضمانت اصالت' },
 ]
 
-const addToCart = () => {
-  if (!numberData.value) return
-  const added = cartStore.addNumber(numberData.value.number, numberData.value.price)
-  if (added) {
-    alert('شماره به سبد خرید اضافه شد')
-  } else {
-    alert('این شماره قبلاً در سبد خرید است')
+const addToCart = async () => {
+  if (!numberData.value || addingToCart.value) return
+  addingToCart.value = true
+  try {
+    const res = await apiFetch(`/numbers/check/${numberData.value.number}`)
+    if (!res.data?.available) {
+      toast.error('این شماره ناموجود است')
+      return
+    }
+    const price = res.data.price ?? numberData.value.price
+    const added = cartStore.addNumber(numberData.value.number, price)
+    if (added) {
+      toast.success('شماره به سبد خرید اضافه شد')
+    } else {
+      toast.warning('این شماره قبلاً در سبد خرید است')
+    }
+  } catch (e: any) {
+    toast.error(e.message || 'خطا در بررسی شماره')
+  } finally {
+    addingToCart.value = false
   }
 }
 
-const buyNow = () => {
-  addToCart()
+const buyNow = async () => {
+  await addToCart()
+  if (!cartStore.items.some(i => i.type === 'number' && i.number === numberData.value?.number)) return
   router.push('/cart')
 }
 </script>

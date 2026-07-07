@@ -42,15 +42,16 @@ const userRegisterValidator = [
   body('nationalId')
     .custom((val) => isValidNationalId(val))
     .withMessage('کد ملی نامعتبر است'),
+  body('address').trim().notEmpty().withMessage('آدرس پستی الزامی است'),
   body('mobile').matches(/^09\d{9}$/).withMessage('شماره موبایل نامعتبر است'),
   body('secondMobile')
     .matches(/^09\d{9}$/)
-    .withMessage('شماره تماس دوم نامعتبر است')
+    .withMessage('شماره تلفن جایگزین نامعتبر است')
     .custom((val, { req }) => {
       const main = String(req.body.mobile || '').replace(/\D/g, '');
       const second = String(val || '').replace(/\D/g, '');
       if (main && second && main === second) {
-        throw new Error('شماره تماس دوم نباید با موبایل اصلی یکسان باشد');
+        throw new Error('شماره تلفن جایگزین نباید با موبایل اصلی یکسان باشد');
       }
       return true;
     }),

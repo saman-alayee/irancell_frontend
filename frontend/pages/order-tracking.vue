@@ -45,7 +45,7 @@
       <div v-if="orders.length" class="space-y-4">
         <div v-for="order in orders" :key="order._id" class="card p-6">
           <div class="flex items-center justify-between mb-4">
-            <span class="font-bold">{{ order.orderNumber }}</span>
+            <span class="font-bold" dir="ltr">{{ order.orderNumber }}</span>
             <span :class="statusColor[order.status]" class="text-xs px-2 py-1 rounded-full">{{ statusLabel[order.status] }}</span>
           </div>
           <div class="text-sm space-y-2 text-body">
