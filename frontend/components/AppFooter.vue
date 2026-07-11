@@ -35,12 +35,27 @@
         </div>
         <div>
           <h4 class="font-bold mb-4 text-irancell-yellow text-sm">قوانین و تماس</h4>
-          <ul class="space-y-2 text-sm text-gray-400">
+          <ul class="space-y-2 text-sm text-gray-400 mb-6">
             <li><NuxtLink to="/terms" class="hover:text-white transition">قوانین و مقررات</NuxtLink></li>
             <li><NuxtLink to="/login" class="hover:text-white transition">ورود</NuxtLink></li>
             <li><NuxtLink to="/register" class="hover:text-white transition">ثبت‌نام</NuxtLink></li>
             <li v-for="mobile in mobiles" :key="mobile" dir="ltr" class="text-right">{{ mobile }}</li>
           </ul>
+          <a
+            referrerpolicy="origin"
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://trustseal.enamad.ir/?id=756034&Code=sDlWOTk5uZbyp0kv5vY7eIVuoGuP2ekc"
+            class="inline-block"
+          >
+            <img
+              referrerpolicy="origin"
+              src="https://trustseal.enamad.ir/logo.aspx?id=756034&Code=sDlWOTk5uZbyp0kv5vY7eIVuoGuP2ekc"
+              alt="نماد اعتماد الکترونیکی"
+              class="cursor-pointer h-24 w-auto"
+              code="sDlWOTk5uZbyp0kv5vY7eIVuoGuP2ekc"
+            />
+          </a>
         </div>
       </div>
       <div class="border-t border-white/10 mt-8 pt-6 text-center text-sm text-gray-500">
