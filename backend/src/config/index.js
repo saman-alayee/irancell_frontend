@@ -12,7 +12,7 @@ module.exports = {
     callbackUrl: process.env.ZARINPAL_CALLBACK_URL || 'http://127.0.0.1:3001/api/payment/verify',
   },
   zibal: {
-    merchantId: process.env.ZIBAL_MERCHANT_ID || '',
+    merchantId: process.env.ZIBAL_MERCHANT_ID || process.env.ZIBAL_MERCHANT || '',
     callbackUrl: process.env.ZIBAL_CALLBACK_URL || 'http://127.0.0.1:3001/api/payment/verify/zibal',
   },
   smsIr: {
