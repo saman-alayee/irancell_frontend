@@ -45,12 +45,12 @@
             referrerpolicy="origin"
             target="_blank"
             rel="noopener noreferrer"
-            href="https://trustseal.enamad.ir/?id=756034&Code=sDlWOTk5uZbyp0kv5vY7eIVuoGuP2ekc"
+            href="https://trustseal.enamad.ir/?id=756034&code=sDlWOTk5uZbyp0kv5vY7eIVuoGuP2ekc"
             class="inline-block"
           >
             <img
               referrerpolicy="origin"
-              src="https://trustseal.enamad.ir/logo.aspx?id=756034&Code=sDlWOTk5uZbyp0kv5vY7eIVuoGuP2ekc"
+              src="https://trustseal.enamad.ir/logo.aspx?id=756034&code=sDlWOTk5uZbyp0kv5vY7eIVuoGuP2ekc"
               alt="نماد اعتماد الکترونیکی"
               class="cursor-pointer h-24 w-auto"
               code="sDlWOTk5uZbyp0kv5vY7eIVuoGuP2ekc"
